@@ -12,7 +12,7 @@ const routes = [
   {
     path: '/',
     component: Default,
-    // meta: { requiresAuth: true },
+    meta: { requiresAuth: true },
     children: [
       { path: '', redirect: '/users' },
       {

@@ -1,4 +1,5 @@
 export interface Address {
+  currentAddress: string
   city: string
 }
 export interface User {
@@ -14,5 +15,8 @@ export interface NewUserPayload {
   username: string
   email: string
   phone: string
-  address: { city: string }
+  address: {
+    currentAddress: string
+    city: string
+  }
 }

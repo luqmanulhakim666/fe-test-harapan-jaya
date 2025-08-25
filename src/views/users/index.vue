@@ -24,6 +24,13 @@
       />
       <v-spacer />
       <v-select
+        v-model="sort"
+        :items="['asc', 'desc']"
+        variant="solo"
+        label="Sort"
+        class="w-32"
+      />
+      <v-select
         v-model="perPage"
         :items="[3, 6, 9]"
         variant="solo"
@@ -106,6 +113,7 @@ const router = useRouter()
 
 const searchQuery = ref('')
 const perPage = ref(3)
+const sort = ref('asc')
 const currentPage = ref(1)
 
 const showConfirm = ref(false)
@@ -129,12 +137,34 @@ const filteredUsers = computed(() => {
   )
 })
 
+const searchRules = computed(() => {
+  const query = searchQuery.value.toLowerCase()
+  return userStore.users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(query) ||
+      user.email.toLowerCase().includes(query) ||
+      user.address.city.toLowerCase().includes(query)
+  )
+})
+
 const totalPages = computed(() =>
   Math.max(1, Math.ceil(filteredUsers.value.length / perPage.value))
 )
 const paginatedUsers = computed(() => {
   const start = (currentPage.value - 1) * perPage.value
-  return filteredUsers.value.slice(start, start + perPage.value)
+
+  const temp = filteredUsers.value.slice(start, start + perPage.value)
+
+  return temp.sort((a, b) => {
+    if (sort.value === 'asc') {
+      if (a.name < b.name) return -1
+      if (a.name > b.name) return 1
+    }
+
+    if (a.name < b.name) return 1
+    if (a.name > b.name) return -1
+    return 0
+  })
 })
 
 const createUser = () => router.push('/users/create')

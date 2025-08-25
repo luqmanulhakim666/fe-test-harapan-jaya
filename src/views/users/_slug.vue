@@ -51,6 +51,14 @@
             required
           />
 
+          <v-textarea
+            v-model="currentAddress"
+            label="Alamat"
+            variant="outlined"
+            :error-messages="errors['address.currentAddress']"
+            required
+          />
+
           <v-btn type="submit" color="primary">{{
             isNewUser ? 'Save' : 'Update'
           }}</v-btn>
@@ -125,7 +133,10 @@ const schema = yup.object({
     .string()
     .matches(phoneRegExp, 'Phone number is not valid')
     .required('Phone is required'),
-  address: yup.object({ city: yup.string().required('City is required') })
+  address: yup.object({
+    currentAddress: yup.string().required('Current Address is required'),
+    city: yup.string().required('City is required')
+  })
 })
 
 const { handleSubmit, errors, resetForm } = useForm<NewUserPayload>({
@@ -135,7 +146,10 @@ const { handleSubmit, errors, resetForm } = useForm<NewUserPayload>({
     username: '',
     email: '',
     phone: '',
-    address: { city: '' }
+    address: {
+      currentAddress: '',
+      city: ''
+    }
   }
 })
 
@@ -144,6 +158,9 @@ const { value: username } = useField('username')
 const { value: email } = useField('email')
 const { value: phone } = useField('phone')
 const { value: city } = useField<string | null>('address.city')
+const { value: currentAddress } = useField<string | null>(
+  'address.currentAddress'
+)
 
 const fetchUserData = async () => {
   if (isNewUser.value) return resetForm()
